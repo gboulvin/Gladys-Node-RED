@@ -1,0 +1,646 @@
+{
+  "manifest_version": 1,
+  "type": "device",
+  "name": "Node-RED",
+  "description": {
+    "en": "Node-RED in Gladys: low-code flows, scene triggers and actions, dashboard widgets.",
+    "fr": "Node-RED dans Gladys : flux low-code, déclencheurs et actions de scène, widgets.",
+    "de": "Node-RED in Gladys: Low-Code-Flows, Szenen-Auslöser und -Aktionen, Dashboard-Widgets.",
+    "es": "Node-RED en Gladys: flujos low-code, disparadores y acciones de escena, widgets."
+  },
+  "version": "0.0.0",
+  "docker_image": "ghcr.io/gboulvin/gladys-node-red:0.0.0",
+  "gladys_version": ">=5.1.0",
+  "cover_image": "https://raw.githubusercontent.com/gboulvin/Gladys-Node-RED/main/cover.png",
+  "categories": ["services", "protocols"],
+  "transports": ["local"],
+  "containers": [
+    {
+      "name": "node-red",
+      "docker_image": "nodered/node-red:5.0",
+      "start": "manual",
+      "volumes": ["/data"],
+      "ports": [
+        {
+          "container_port": 1880,
+          "name": "editor",
+          "label": {
+            "en": "Node-RED editor",
+            "fr": "Éditeur Node-RED",
+            "de": "Node-RED-Editor",
+            "es": "Editor de Node-RED"
+          },
+          "browsable": true
+        }
+      ],
+      "read_only": false,
+      "memory_mb": 512,
+      "cpu": 1
+    }
+  ],
+  "config_schema": [
+    {
+      "key": "intro",
+      "type": "section",
+      "label": {
+        "en": "Node-RED editor",
+        "fr": "Éditeur Node-RED",
+        "de": "Node-RED-Editor",
+        "es": "Editor de Node-RED"
+      },
+      "description": {
+        "en": "Choose the username and password of the editor, then save: Node-RED starts and its editor opens at http://{{gladys_host}}:{{port:editor}} (it never starts without a password).",
+        "fr": "Choisissez l'identifiant et le mot de passe de l'éditeur, puis enregistrez : Node-RED démarre et son éditeur s'ouvre sur http://{{gladys_host}}:{{port:editor}} (il ne démarre jamais sans mot de passe).",
+        "de": "Wähle Benutzername und Passwort des Editors und speichere: Node-RED startet, der Editor ist unter http://{{gladys_host}}:{{port:editor}} erreichbar (ohne Passwort startet er nie).",
+        "es": "Elija el usuario y la contraseña del editor y guarde: Node-RED se inicia y su editor se abre en http://{{gladys_host}}:{{port:editor}} (nunca se inicia sin contraseña)."
+      },
+      "links": [
+        {
+          "url": "https://nodered.org/docs/user-guide/",
+          "label": {
+            "en": "Node-RED user guide",
+            "fr": "Guide utilisateur Node-RED",
+            "de": "Node-RED-Benutzerhandbuch",
+            "es": "Guía de usuario de Node-RED"
+          }
+        },
+        {
+          "url": "https://github.com/gboulvin/Gladys-Node-RED/blob/main/docs/en.md",
+          "label": {
+            "en": "Integration documentation",
+            "fr": "Documentation de l'intégration",
+            "de": "Dokumentation der Integration",
+            "es": "Documentación de la integración"
+          }
+        }
+      ]
+    },
+    {
+      "key": "username",
+      "type": "string",
+      "label": {
+        "en": "Username",
+        "fr": "Nom d'utilisateur",
+        "de": "Benutzername",
+        "es": "Nombre de usuario"
+      },
+      "description": {
+        "en": "Login of the Node-RED editor.",
+        "fr": "Identifiant de l'éditeur Node-RED.",
+        "de": "Anmeldename des Node-RED-Editors.",
+        "es": "Usuario del editor de Node-RED."
+      },
+      "placeholder": {
+        "en": "e.g. admin",
+        "fr": "ex. admin",
+        "de": "z. B. admin",
+        "es": "p. ej. admin"
+      },
+      "required": true,
+      "default": "admin"
+    },
+    {
+      "key": "password",
+      "type": "secret",
+      "label": {
+        "en": "Password",
+        "fr": "Mot de passe",
+        "de": "Passwort",
+        "es": "Contraseña"
+      },
+      "description": {
+        "en": "8 characters minimum. Protects the editor and the admin API.",
+        "fr": "8 caractères minimum. Protège l'éditeur et l'API d'administration.",
+        "de": "Mindestens 8 Zeichen. Schützt den Editor und die Admin-API.",
+        "es": "8 caracteres como mínimo. Protege el editor y la API de administración."
+      },
+      "placeholder": {
+        "en": "8 characters minimum",
+        "fr": "8 caractères minimum",
+        "de": "mindestens 8 Zeichen",
+        "es": "8 caracteres como mínimo"
+      },
+      "required": true
+    },
+    {
+      "key": "protect_http_nodes",
+      "type": "boolean",
+      "label": {
+        "en": "Protect the HTTP endpoints of the flows",
+        "fr": "Protéger les points d'accès HTTP des flux",
+        "de": "HTTP-Endpunkte der Flows schützen",
+        "es": "Proteger los puntos de acceso HTTP de los flujos"
+      },
+      "description": {
+        "en": "The \"http in\" nodes require the same username and password (HTTP Basic). Recommended: they are reachable from your network.",
+        "fr": "Les nœuds « http in » exigent le même identifiant et mot de passe (HTTP Basic). Recommandé : ils sont accessibles depuis votre réseau.",
+        "de": "Die „http in“-Nodes verlangen denselben Benutzernamen und dasselbe Passwort (HTTP Basic). Empfohlen: Sie sind aus deinem Netzwerk erreichbar.",
+        "es": "Los nodos «http in» exigen el mismo usuario y contraseña (HTTP Basic). Recomendado: son accesibles desde su red."
+      },
+      "required": false,
+      "default": true
+    },
+    {
+      "key": "persist_context",
+      "type": "boolean",
+      "label": {
+        "en": "Keep the context after a restart",
+        "fr": "Conserver le contexte après un redémarrage",
+        "de": "Kontext nach einem Neustart behalten",
+        "es": "Conservar el contexto tras un reinicio"
+      },
+      "description": {
+        "en": "Stores the flow and global context on disk (localfilesystem) instead of memory only.",
+        "fr": "Enregistre le contexte des flux et global sur disque (localfilesystem) au lieu de la mémoire seule.",
+        "de": "Speichert den Flow- und globalen Kontext auf der Festplatte (localfilesystem) statt nur im Speicher.",
+        "es": "Guarda el contexto de los flujos y global en disco (localfilesystem) en lugar de solo en memoria."
+      },
+      "required": false,
+      "default": false
+    },
+    {
+      "key": "events",
+      "type": "section",
+      "label": {
+        "en": "Send events to Gladys scenes",
+        "fr": "Envoyer des événements aux scènes Gladys",
+        "de": "Ereignisse an Gladys-Szenen senden",
+        "es": "Enviar eventos a las escenas de Gladys"
+      },
+      "description": {
+        "en": "In a function node: await global.get('gladys').trigger('door_opened', { value: 1, text: 'Front door' }). Or an \"http request\" node: POST to ${GLADYS_EVENT_URL} with the header Authorization: Bearer ${GLADYS_EVENT_TOKEN}. Then start a scene with the \"Node-RED event\" trigger.",
+        "fr": "Dans un nœud function : await global.get('gladys').trigger('door_opened', { value: 1, text: 'Porte d’entrée' }). Ou un nœud « http request » : POST vers ${GLADYS_EVENT_URL} avec l'en-tête Authorization: Bearer ${GLADYS_EVENT_TOKEN}. Démarrez ensuite une scène avec le déclencheur « Événement Node-RED ».",
+        "de": "In einem Function-Node: await global.get('gladys').trigger('door_opened', { value: 1, text: 'Haustür' }). Oder ein „http request“-Node: POST an ${GLADYS_EVENT_URL} mit dem Header Authorization: Bearer ${GLADYS_EVENT_TOKEN}. Starte dann eine Szene mit dem Auslöser „Node-RED-Ereignis“.",
+        "es": "En un nodo function: await global.get('gladys').trigger('door_opened', { value: 1, text: 'Puerta principal' }). O un nodo «http request»: POST a ${GLADYS_EVENT_URL} con la cabecera Authorization: Bearer ${GLADYS_EVENT_TOKEN}. Después inicie una escena con el disparador «Evento de Node-RED»."
+      },
+      "links": [
+        {
+          "url": "https://github.com/gboulvin/Gladys-Node-RED/blob/main/docs/en.md#scenes",
+          "label": {
+            "en": "Examples",
+            "fr": "Exemples",
+            "de": "Beispiele",
+            "es": "Ejemplos"
+          }
+        }
+      ]
+    },
+    {
+      "key": "migration",
+      "type": "section",
+      "label": {
+        "en": "Coming from the built-in Node-RED integration?",
+        "fr": "Vous venez de l'intégration Node-RED native ?",
+        "de": "Kommst du von der eingebauten Node-RED-Integration?",
+        "es": "¿Viene de la integración Node-RED nativa?"
+      },
+      "description": {
+        "en": "Export all your flows from the old editor (menu > Export > All flows), import them here, then disable the built-in integration. MQTT nodes must point to the IP address of the Gladys host, not to localhost.",
+        "fr": "Exportez tous vos flux depuis l'ancien éditeur (menu > Exporter > Tous les flux), importez-les ici, puis désactivez l'intégration native. Les nœuds MQTT doivent viser l'adresse IP de la machine Gladys, pas localhost.",
+        "de": "Exportiere alle Flows aus dem alten Editor (Menü > Exportieren > Alle Flows), importiere sie hier und deaktiviere dann die eingebaute Integration. MQTT-Nodes müssen auf die IP-Adresse des Gladys-Hosts zeigen, nicht auf localhost.",
+        "es": "Exporte todos sus flujos desde el editor antiguo (menú > Exportar > Todos los flujos), impórtelos aquí y desactive la integración nativa. Los nodos MQTT deben apuntar a la dirección IP del equipo de Gladys, no a localhost."
+      },
+      "links": [
+        {
+          "url": "https://github.com/gboulvin/Gladys-Node-RED/blob/main/docs/en.md#migrating-from-the-built-in-integration",
+          "label": {
+            "en": "Migration guide",
+            "fr": "Guide de migration",
+            "de": "Migrationsanleitung",
+            "es": "Guía de migración"
+          }
+        }
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "key": "test_connection",
+      "label": {
+        "en": "Test the connection",
+        "fr": "Tester la connexion",
+        "de": "Verbindung testen",
+        "es": "Probar la conexión"
+      },
+      "description": {
+        "en": "Checks that Node-RED answers and counts its flows.",
+        "fr": "Vérifie que Node-RED répond et compte ses flux.",
+        "de": "Prüft, ob Node-RED antwortet, und zählt seine Flows.",
+        "es": "Comprueba que Node-RED responde y cuenta sus flujos."
+      },
+      "timeout_seconds": 30
+    },
+    {
+      "key": "restart_node_red",
+      "label": {
+        "en": "Restart Node-RED",
+        "fr": "Redémarrer Node-RED",
+        "de": "Node-RED neu starten",
+        "es": "Reiniciar Node-RED"
+      },
+      "description": {
+        "en": "Restarts the Node-RED container, e.g. after installing nodes.",
+        "fr": "Redémarre le conteneur Node-RED, par exemple après l'installation de nœuds.",
+        "de": "Startet den Node-RED-Container neu, z. B. nach der Installation von Nodes.",
+        "es": "Reinicia el contenedor de Node-RED, por ejemplo tras instalar nodos."
+      },
+      "timeout_seconds": 30
+    }
+  ],
+  "scene_triggers": [
+    {
+      "key": "node_red_event",
+      "label": {
+        "en": "Node-RED event",
+        "fr": "Événement Node-RED",
+        "de": "Node-RED-Ereignis",
+        "es": "Evento de Node-RED"
+      },
+      "description": {
+        "en": "A flow sent an event to Gladys.",
+        "fr": "Un flux a envoyé un événement à Gladys.",
+        "de": "Ein Flow hat ein Ereignis an Gladys gesendet.",
+        "es": "Un flujo envió un evento a Gladys."
+      },
+      "fields": [
+        {
+          "key": "event",
+          "type": "string",
+          "label": {
+            "en": "Event name",
+            "fr": "Nom de l'événement",
+            "de": "Ereignisname",
+            "es": "Nombre del evento"
+          },
+          "description": {
+            "en": "Leave empty to react to every event.",
+            "fr": "Laissez vide pour réagir à tous les événements.",
+            "de": "Leer lassen, um auf jedes Ereignis zu reagieren.",
+            "es": "Déjelo vacío para reaccionar a todos los eventos."
+          },
+          "placeholder": {
+            "en": "e.g. door_opened",
+            "fr": "ex. door_opened",
+            "de": "z. B. door_opened",
+            "es": "p. ej. door_opened"
+          }
+        }
+      ],
+      "variables": [
+        {
+          "key": "event",
+          "type": "string",
+          "label": {
+            "en": "Event name",
+            "fr": "Nom de l'événement",
+            "de": "Ereignisname",
+            "es": "Nombre del evento"
+          }
+        },
+        {
+          "key": "value",
+          "type": "number",
+          "label": {
+            "en": "Value",
+            "fr": "Valeur",
+            "de": "Wert",
+            "es": "Valor"
+          }
+        },
+        {
+          "key": "text",
+          "type": "string",
+          "label": {
+            "en": "Text",
+            "fr": "Texte",
+            "de": "Text",
+            "es": "Texto"
+          }
+        }
+      ]
+    },
+    {
+      "key": "node_red_status_changed",
+      "label": {
+        "en": "Node-RED started or stopped",
+        "fr": "Node-RED démarré ou arrêté",
+        "de": "Node-RED gestartet oder gestoppt",
+        "es": "Node-RED iniciado o detenido"
+      },
+      "description": {
+        "en": "Node-RED came online or went offline.",
+        "fr": "Node-RED est devenu joignable ou injoignable.",
+        "de": "Node-RED ist erreichbar oder nicht mehr erreichbar geworden.",
+        "es": "Node-RED pasó a estar en línea o sin conexión."
+      },
+      "fields": [
+        {
+          "key": "status",
+          "type": "select",
+          "label": {
+            "en": "Status",
+            "fr": "État",
+            "de": "Status",
+            "es": "Estado"
+          },
+          "options": [
+            {
+              "value": "online",
+              "label": {
+                "en": "Online",
+                "fr": "En ligne",
+                "de": "Online",
+                "es": "En línea"
+              }
+            },
+            {
+              "value": "offline",
+              "label": {
+                "en": "Offline",
+                "fr": "Hors ligne",
+                "de": "Offline",
+                "es": "Sin conexión"
+              }
+            }
+          ]
+        }
+      ],
+      "variables": [
+        {
+          "key": "status",
+          "type": "string",
+          "label": {
+            "en": "Status",
+            "fr": "État",
+            "de": "Status",
+            "es": "Estado"
+          }
+        },
+        {
+          "key": "version",
+          "type": "string",
+          "label": {
+            "en": "Node-RED version",
+            "fr": "Version de Node-RED",
+            "de": "Node-RED-Version",
+            "es": "Versión de Node-RED"
+          }
+        }
+      ]
+    }
+  ],
+  "scene_actions": [
+    {
+      "key": "send_to_flow",
+      "label": {
+        "en": "Send to a Node-RED flow",
+        "fr": "Envoyer à un flux Node-RED",
+        "de": "An einen Node-RED-Flow senden",
+        "es": "Enviar a un flujo de Node-RED"
+      },
+      "description": {
+        "en": "POSTs { message, value } to an \"http in\" node of a flow.",
+        "fr": "Envoie { message, value } en POST à un nœud « http in » d'un flux.",
+        "de": "Sendet { message, value } per POST an einen „http in“-Node eines Flows.",
+        "es": "Envía { message, value } por POST a un nodo «http in» de un flujo."
+      },
+      "timeout_seconds": 30,
+      "fields": [
+        {
+          "key": "path",
+          "type": "string",
+          "required": true,
+          "label": {
+            "en": "Path of the http in node",
+            "fr": "Chemin du nœud http in",
+            "de": "Pfad des http-in-Nodes",
+            "es": "Ruta del nodo http in"
+          },
+          "placeholder": {
+            "en": "e.g. /gladys/lights",
+            "fr": "ex. /gladys/lumieres",
+            "de": "z. B. /gladys/licht",
+            "es": "p. ej. /gladys/luces"
+          }
+        },
+        {
+          "key": "message",
+          "type": "string",
+          "label": {
+            "en": "Message",
+            "fr": "Message",
+            "de": "Nachricht",
+            "es": "Mensaje"
+          },
+          "description": {
+            "en": "Accepts scene variables.",
+            "fr": "Accepte les variables de scène.",
+            "de": "Akzeptiert Szenenvariablen.",
+            "es": "Acepta variables de escena."
+          }
+        },
+        {
+          "key": "value",
+          "type": "number",
+          "label": {
+            "en": "Value",
+            "fr": "Valeur",
+            "de": "Wert",
+            "es": "Valor"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "key": "success",
+          "type": "boolean",
+          "label": {
+            "en": "Success (HTTP 2xx)",
+            "fr": "Succès (HTTP 2xx)",
+            "de": "Erfolg (HTTP 2xx)",
+            "es": "Éxito (HTTP 2xx)"
+          }
+        },
+        {
+          "key": "status_code",
+          "type": "number",
+          "label": {
+            "en": "HTTP status",
+            "fr": "Statut HTTP",
+            "de": "HTTP-Status",
+            "es": "Estado HTTP"
+          }
+        },
+        {
+          "key": "response",
+          "type": "string",
+          "label": {
+            "en": "Response",
+            "fr": "Réponse",
+            "de": "Antwort",
+            "es": "Respuesta"
+          }
+        }
+      ]
+    },
+    {
+      "key": "set_flows_state",
+      "label": {
+        "en": "Start or stop all flows",
+        "fr": "Démarrer ou arrêter tous les flux",
+        "de": "Alle Flows starten oder stoppen",
+        "es": "Iniciar o detener todos los flujos"
+      },
+      "timeout_seconds": 30,
+      "fields": [
+        {
+          "key": "state",
+          "type": "select",
+          "required": true,
+          "label": {
+            "en": "Flows",
+            "fr": "Flux",
+            "de": "Flows",
+            "es": "Flujos"
+          },
+          "options": [
+            {
+              "value": "start",
+              "label": {
+                "en": "Start",
+                "fr": "Démarrer",
+                "de": "Starten",
+                "es": "Iniciar"
+              }
+            },
+            {
+              "value": "stop",
+              "label": {
+                "en": "Stop",
+                "fr": "Arrêter",
+                "de": "Stoppen",
+                "es": "Detener"
+              }
+            }
+          ]
+        }
+      ],
+      "outputs": [
+        {
+          "key": "running",
+          "type": "boolean",
+          "label": {
+            "en": "Flows running",
+            "fr": "Flux en marche",
+            "de": "Flows aktiv",
+            "es": "Flujos activos"
+          }
+        }
+      ]
+    },
+    {
+      "key": "set_flow_enabled",
+      "label": {
+        "en": "Enable or disable a flow",
+        "fr": "Activer ou désactiver un flux",
+        "de": "Einen Flow aktivieren oder deaktivieren",
+        "es": "Activar o desactivar un flujo"
+      },
+      "timeout_seconds": 30,
+      "fields": [
+        {
+          "key": "flow",
+          "type": "select",
+          "source": "devices",
+          "required": true,
+          "label": {
+            "en": "Flow",
+            "fr": "Flux",
+            "de": "Flow",
+            "es": "Flujo"
+          }
+        },
+        {
+          "key": "enabled",
+          "type": "boolean",
+          "default": true,
+          "label": {
+            "en": "Enabled",
+            "fr": "Activé",
+            "de": "Aktiviert",
+            "es": "Activado"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "key": "enabled",
+          "type": "boolean",
+          "label": {
+            "en": "Flow enabled",
+            "fr": "Flux activé",
+            "de": "Flow aktiviert",
+            "es": "Flujo activado"
+          }
+        }
+      ]
+    },
+    {
+      "key": "restart_node_red",
+      "label": {
+        "en": "Restart Node-RED",
+        "fr": "Redémarrer Node-RED",
+        "de": "Node-RED neu starten",
+        "es": "Reiniciar Node-RED"
+      },
+      "timeout_seconds": 30,
+      "outputs": [
+        {
+          "key": "restarted",
+          "type": "boolean",
+          "label": {
+            "en": "Restarted",
+            "fr": "Redémarré",
+            "de": "Neu gestartet",
+            "es": "Reiniciado"
+          }
+        }
+      ]
+    }
+  ],
+  "widgets": [
+    {
+      "key": "node_red_status",
+      "label": {
+        "en": "Node-RED status",
+        "fr": "État de Node-RED",
+        "de": "Node-RED-Status",
+        "es": "Estado de Node-RED"
+      },
+      "description": {
+        "en": "Is Node-RED up, its version and flows, with start, stop and restart buttons.",
+        "fr": "Node-RED est-il en marche, sa version et ses flux, avec boutons démarrer, arrêter, redémarrer.",
+        "de": "Läuft Node-RED, Version und Flows, mit Tasten zum Starten, Stoppen und Neustarten.",
+        "es": "Si Node-RED funciona, su versión y flujos, con botones iniciar, detener y reiniciar."
+      },
+      "icon": "server",
+      "action_timeout_seconds": 30
+    },
+    {
+      "key": "node_red_flows",
+      "label": {
+        "en": "Node-RED flows",
+        "fr": "Flux Node-RED",
+        "de": "Node-RED-Flows",
+        "es": "Flujos de Node-RED"
+      },
+      "description": {
+        "en": "The flows of Node-RED and whether each one is enabled.",
+        "fr": "Les flux de Node-RED et l'état activé de chacun.",
+        "de": "Die Flows von Node-RED und ob jeder aktiviert ist.",
+        "es": "Los flujos de Node-RED y si cada uno está activado."
+      },
+      "icon": "git-branch"
+    }
+  ]
+}
