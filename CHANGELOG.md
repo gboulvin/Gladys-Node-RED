@@ -10,6 +10,8 @@ the notes of the version's GitHub Release.
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-10-29
+
 ### Added
 
 - Node-RED 5 as an external integration, replacing the Node-RED integration
@@ -30,4 +32,5 @@ the notes of the version's GitHub Release.
   widgets and documentation, with a migration guide from the built-in
   integration.
 
-[Unreleased]: https://github.com/gboulvin/Gladys-Node-RED/commits/main
+[Unreleased]: https://github.com/gboulvin/Gladys-Node-RED/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/gboulvin/Gladys-Node-RED/releases/tag/v1.0.0

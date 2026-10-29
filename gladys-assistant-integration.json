@@ -8,8 +8,8 @@
     "de": "Node-RED in Gladys: Low-Code-Flows, Szenen-Auslöser und -Aktionen, Dashboard-Widgets.",
     "es": "Node-RED en Gladys: flujos low-code, disparadores y acciones de escena, widgets."
   },
-  "version": "0.0.0",
-  "docker_image": "ghcr.io/gboulvin/gladys-node-red:0.0.0",
+  "version": "1.0.0",
+  "docker_image": "ghcr.io/gboulvin/gladys-node-red:1.0.0",
   "gladys_version": ">=5.1.0",
   "cover_image": "https://raw.githubusercontent.com/gboulvin/Gladys-Node-RED/main/cover.png",
   "categories": ["services", "protocols"],
